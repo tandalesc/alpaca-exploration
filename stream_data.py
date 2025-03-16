@@ -7,4 +7,4 @@ client.start_stream("BTC/USD")
 client.show_stream("BTC/USD")
 
 client.stream.run()
-# client.show_stream("BTC/USD")
+client.show_stream("BTC/USD")

@@ -46,7 +46,7 @@ def dataframe_from_bar(bar: Bar) -> pd.DataFrame:
         ],
         index=[bar.timestamp],
     )
-    # df.index = df.index.tz_convert("US/Eastern")
+    df.index = df.index.tz_convert("US/Eastern")
     return df
 
 
