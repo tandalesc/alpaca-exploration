@@ -9,7 +9,7 @@ class BollingerBandSignals:
     low: pd.Series
 
     def __init__(self, df: pd.DataFrame):
-        indicator_bb = BollingerBands(close=df.close, window=15, window_dev=2.4)
+        indicator_bb = BollingerBands(close=df.close, window=20, window_dev=2)
         self.bands = pd.DataFrame(
             {
                 "upper": indicator_bb.bollinger_hband(),
@@ -22,13 +22,16 @@ class BollingerBandSignals:
 
 
 def high_bb_signal(series: pd.Series, upper_bb: pd.Series) -> list[float]:
+    raw_volatility = (series.max() - series.min()) / series.median()
+    signal_offset = 0.05 * raw_volatility
     skip = False  # skip repeated markers
     signal = []
     comparison = upper_bb
     for date, value in series.items():
         comparison_value = comparison.loc[date]
         if value > comparison_value and skip is False:
-            signal.append(value * 1.002)
+            # TODO: move this to analysis class, leave signals raw
+            signal.append(value * (1 + signal_offset))
             skip = True
         else:
             signal.append(np.nan)
@@ -38,13 +41,16 @@ def high_bb_signal(series: pd.Series, upper_bb: pd.Series) -> list[float]:
 
 
 def low_bb_signal(series: pd.Series, lower_bb: pd.Series) -> list[float]:
+    raw_volatility = (series.max() - series.min()) / series.median()
+    signal_offset = 0.08 * raw_volatility
     skip = False  # skip repeated markers
     signal = []
     comparison = lower_bb
     for date, value in series.items():
         comparison_value = comparison.loc[date]
         if value < comparison_value and skip is False:
-            signal.append(value * 0.998)
+            # TODO: move this to analysis class, leave signals raw
+            signal.append(value * (1 - signal_offset))
             skip = True
         else:
             signal.append(np.nan)
