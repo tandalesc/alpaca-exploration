@@ -32,16 +32,6 @@ def get_recent_crypto_data(
     return df
 
 
-def get_crypto_client():
-    import os
-    from dotenv import load_dotenv
-
-    load_dotenv()
-    api_key = os.getenv("ALPACA_API_KEY")
-    api_secret = os.getenv("ALPACA_API_SECRET")
-    return CryptoStreamClient(api_key, api_secret)
-
-
 class CryptoStreamClient(StreamClient):
     def __init__(self, api_key: str, api_secret: str):
         StreamClient.__init__(self, CryptoDataStream(api_key, api_secret))
